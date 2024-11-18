@@ -1,0 +1,70 @@
+kubectl create -f txt.yaml --- create a k8s resources using yml file
+kubectl edit (some resource) (resource name) --- edit running resource
+kubectl delete (some resource) (resource name) --- delete resource
+
+*** Taints set on nodes, and tolerations set on pods !!!
+
+## Node ###
+kubectl taint nodes node1 NodeName=node1:NoSchedule --- Set "tag" on node 1 NodeName: node-1
+kubectl label nodes node1 size=Large --- Set label size: Large on node node1
+
+## Flags ##
+dry-run=client --- This will not create the resource, instead, tell you whether the resource can be created and if your command is right.
+-o yaml --- This will output the resource definition in YAML format on screen.
+--selector app=app1 --- This will show as resources with app:app1 label
+
+## Pods ##
+kubectl run nginx-pod --image=nginx:alpine --- create a pod named nginx-pod from nginx:alpine image
+kubectl get pods --- get all the pods in spesific namespace
+kubectl describe pod nginx --- describe pod configuartion
+kubectl expose pod redis --port=6379 --name redis-service --- Expose redis pod port 6379, to redis-service service (create a new service named redis-service)
+kubectl expose pod nginx --type=NodePort --port=80 --name=nginx-service --- expose nginx pod port 80, to nginx-service service (create a new service named nginx-service)
+
+
+## Replica Set ##
+kubectl get replicationcontrollers --- get replication controller details
+kubectl get replicaset --- get replica set details
+kubectl delete replicaset my-app --- delete replicaset
+kubectl edit replicasets.apps my-app --- edit replicaset
+kubectl scale --replicas=3 -f txt.yaml --- using this command we are scaling our replica using replicare file
+kubectl scale --replicas=3 replicaset my-app --- using this command we are scaling our replica, by adding the replica name.
+
+## Deployment ##
+kubectl get all --- using this command, we see all the resources that created in spesific namespace
+kubectl create deployment --image=nginx nginx --- create nginx deployment
+kubectl create deployment --image=nginx nginx --dry-run=client -o yaml > nginx-deployment.yaml --- Generate Deployment YAML file.
+kubectl expose deployment nginx --port 80 --- expose a port on nginx deployment
+kubectl edit deployment nginx --- edit deployment named nginx
+kubectl scale deployment nginx --replicas=7 --- scale the deployment to 7 replicas
+kubectl set image deployment nginx nginx=nginx:1.18 --- update deployment image
+
+## Service ##
+kubectl get services --- list all the service in NS
+kubectl create service clusterip redis --tcp=6379:6379 --- Create service named redis-service off ClusterIP type and expose redis pod port on 6379
+kubectl create service nodeport nginx --tcp=80:80 --node-port=30080 --- create service named nginx off NodePort type, and expose nginx pod port 80
+
+## Namespace ##
+kubectl config set-context $(kubectl config current-context) --namespace=dev --- set the default namespace to dev instade default
+
+## DaemonSet ##
+kubectl get daemonset --- get all Daemon Sets
+kubectl describe daemonset (daemonset name) --- get more details about daemonsetapiVersion: apps/v1
+kind: DaemonSet
+namespace: kube-system
+metadata:
+  namespace: kube-system
+  name: elasticsearch
+  labels:
+    app: elasticsearch
+spec:
+  selector:
+    matchLabels:
+      name: elasticsearch
+  template:
+    metadata:
+      labels:
+        name: elasticsearch
+    spec:
+      containers:
+      - name: elasticsearch
+        image: registry.k8s.io/fluentd-elasticsearch:1.20

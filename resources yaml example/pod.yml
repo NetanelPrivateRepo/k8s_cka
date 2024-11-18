@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx # pod name
+  label:
+    app: app1 # the tag label we set on the pod
+spec:
+  nodeName: node01 # when creating only pod we have to set on which node to run
+  containers:
+  - name: nginx # container name
+    image: nginx:1.14.2 # container image
+    ports:
+    - containerPort: 80
+    resources:
+      requests: # The amount of resources our pod use
+        memory: "1Gi"
+        cpu: 1
+      limits: # The limit of the resources our pod use
+        memory: "2Gi"
+        cpu: 2
+  tolerations: # we using this configuration to selesct on which nodes schedule our pod, the tag nodename:node-1 set on the relevant node.
+  - key: "nodename"
+    operator: "Equal"
+    value: "node-1"
+    effect: "NoSchedule"
+  nodeSelsector:
+    size: Large ### using this nodeSelsector label our new pod will created only on nodes that have "size: Large" label tag on them
+  ### Another way to select on which Node run the pod we can worj with affinity
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution: # can be requiredDuringSchedulingIgnoredDuringExecution / preferredDuringSchedulingIgnoredDuringExecution , Doc: https://kubernetes.io/docs/tasks/configure-pod-container/assign-pods-nodes-using-node-affinity/#schedule-a-pod-using-required-node-affinity
+        preference:
+          matchExpressions: # in this example we will schedule on Large or X-Large nodes only, If we set preferredDuringSchedulingIgnoredDuringExecution its will schedule on every node but first will try on Large/X-Large nodes
+          - key: size
+            operator: In
+            values:
+            - Large
+            - X-Large

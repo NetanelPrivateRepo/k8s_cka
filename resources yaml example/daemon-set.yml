@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: frontend
+  labels: # used for managing apps/services/resources depends on the label tag be set
+    app: app1 # label tag on replica-set level
+  annotations: # used for attaech some meta data to k8s objects
+    buildVersion: 1.2.3
+spec:
+  selector:
+    matchLabels:
+      app: app1
+  template:
+    metadata:
+      labels:
+        app: app1 # label tag on pod level
+    spec:
+      containers:
+      - name: php-redis
+        image: us-docker.pkg.dev/google-samples/containers/gke/gb-frontend:v5
