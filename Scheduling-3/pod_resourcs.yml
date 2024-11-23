@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx # pod name
+  label:
+    app: app1 # the tag label we set on the pod
+spec:
+  nodeName: node01 # when creating only pod we have to set on which node to run
+  containers:
+  - name: nginx # container name
+    image: nginx:1.14.2 # container image
+    ports:
+    - containerPort: 80
+    resources:
+      requests: # The amount of resources our pod use
+        memory: "1Gi"
+        cpu: 1
+      limits: # The limit of the resources our pod use
+        memory: "2Gi"
+        cpu: 2
+

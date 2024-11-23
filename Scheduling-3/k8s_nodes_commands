@@ -1,0 +1,4 @@
+*** Taints set on nodes, and tolerations set on pods !!!
+
+kubectl taint nodes node1 NodeName=node1:NoSchedule --- Set "tag" on node 1 NodeName: node-1
+kubectl label nodes node1 size=Large --- Set label size: Large on node node1
