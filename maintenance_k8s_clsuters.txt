@@ -1,0 +1,37 @@
+kubectl drain node-1 --- Drain node in preparation for maintenance
+kubectl cordon node-1 --- Mark node as un schedulable
+kubectl uncordon node-1 --- Mark node as schedulable
+
+kubeadm upgrade plan --- Check which versions are available to upgrade to and validate whether your current cluster is upgradeable.
+
+kubeadm upgrade apply v1.12.0 --- Upgrade your Kubernetes cluster to the specified version 
+apt-get upgrade -y kubelet=1.12.0 --- on nodes Upgrade the kubelet version (master and slave)
+apt-get upgrade -y kubeadm=1.12.0  --- on slave nodes update kubeadm version
+kubeadm upgrade node config --kubelet-version v1.12.0 --- Upgrade commands for a node in the cluster
+
+
+
+# etcd backups
+export ETCDCTL_API=3 --- to use snapshot commands 
+etcdctl --endpoints=127.0.0.1:2379 \
+--cacert="/etc/kubernetes/pki/etcd/ca.crt" \
+--cert="/etc/kubernetes/pki/etcd/server.crt" \
+--key="/etc/kubernetes/pki/etcd/server.key"  \
+snapshot save /opt/snapshot-pre-boot.db
+
+#etcd restore
+etcdctl snapshot restore --data-dir {where to save the data} {path where backup located}
+go to etcd pod defention, probablu under /etc/kubernetes/manifests/etcd.yaml > update:
+
+- hostPath:
+    path: /opt/etcd-from-back
+    type: DirectoryOrCreate
+  name: etcd-data
+
+
+
+etcdctl --endpoints=https://192.8.90.11:2379 \
+--cacert="/etc/kubernetes/pki/etcd/ca.crt" \
+--cert="/etc/kubernetes/pki/etcd/server.crt" \
+--key="/etc/kubernetes/pki/etcd/server.key"  \
+snapshot save /opt/cluster1.db

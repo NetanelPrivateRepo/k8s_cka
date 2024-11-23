@@ -1,0 +1,54 @@
+apiVersion: kubescheduler.config.k8s.io/v1
+kind: KubeSchedulerConfiguration
+profiles:
+  - schedulerName: scheduler-2
+  
+
+
+# to use update the defualt scheduler, need to edit the ExecStart
+# example: ExecStart=/usr/local/bin/kube-scheduler --config=/etc/kubernetes/config/scheduler-2.yaml file 
+
+# another way to deploy scheduler is uisng Pod config
+apiVersion: v1
+kind: Pod
+metadata:
+  name: scheduler-2
+  namespace: kube-system
+spec:
+  containers:
+  - command: 
+    - kube-scheduler-2
+    - --address=-127.0.0.1
+    - --kubeconfig=/etc/kubernetes/config/scheduler.conf
+    - --config=/etc/kubernetes/config/scheduler-2.yaml
+  schedulerName: my-scheduler 
+
+# to set on pod on which scheduler ro run, we have to add: schedulerName: scheduler-2 under containers tab (added ^^^)
+
+
+# Deploy few scheduler :
+
+apiVersion: kubescheduler.config.k8s.io/v1
+kind: KubeSchedulerConfiguration
+profiles:
+- schedulerName: scheduler-2
+  - plugins:
+      score:
+        disabled:
+        - name: PodTopologySpread
+        enabled:
+        - name: MyCustomPluginA
+        - name: MyCustomPluginB
+- schedulerName: scheduler-3
+- schedulerName: scheduler-4
+
+References:
+https://github.com/kubernetes/community/blob/master/contributors/devel/sig-scheduling/scheduling_code_hierarchy_overview.md
+https://kubernetes.io/blog/2017/03/advanced-scheduling-in-kubernetes/
+https://jvns.ca/blog/2017/07/27/how-does-the-kubernetes-scheduler-work/
+https://stackoverflow.com/questions/28857993/how-does-kubernetes-scheduler-work
+
+
+### logs
+
+kubectl logs -f (pod name) (container) --- -f streaming the logs online

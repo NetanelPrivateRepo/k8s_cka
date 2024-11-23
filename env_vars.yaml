@@ -1,0 +1,29 @@
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ubuntu-sleeper-pod
+spec:
+  containers:
+    - name: ubuntu-sleeper
+      image: ubuntu-sleeper
+      env:
+      - name: APP_COLOR # env variable, in this case it's a key-value format
+        value: pink
+      - name: APP_COLOR # env variable, in this case we are using config-maps for a single env
+        valueFrom:
+          configMapKeyRef:
+            name: app-config
+            key: APP_COLOR
+      - name: DB_User # env variable, in this case we are using secret for a single env
+        valueFrom:
+          secretKeyRef:
+            name: app-secret
+            key: DB_User
+      envFrom: # env variable
+        - configMapRef: # In this case we are using config-maps for a env
+            name: myconfigmap
+        - secretRef: # In this case we are using secret for a env
+            name: app-secret
+        
+      

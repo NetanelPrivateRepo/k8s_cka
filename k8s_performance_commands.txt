@@ -1,0 +1,2 @@
+kubectl top node -- see node cpu and memory usage 
+kubectl top pod -- see pod cpu and memory usage

@@ -1,0 +1,6 @@
+kubectl rollout status deployment/myApp-deployment --- see rollout status 
+kubectl rollout history deployment/myApp-deployment -- see rollout history
+kubectl rollout undo deployment/myApp-deployment --- made a revert to previus deployment version
+
+updateStrategy:
+  type: RollingUpdate/Recreate --- Recreate delete all the pods and create a new one, RollingUpdate delete pods one by one 
