@@ -1,0 +1,19 @@
+kubectl create secret docker-registry private-reg-cred \
+  --docker-email=dock_user@myprivateregistry.com \
+  --docker-username=dock_user \
+  --docker-password=dock_password \
+  --docker-server=myprivateregistry.com:5000
+
+
+# in this exmaple we are creating a pod from privae images repo 
+# we are accessing the private repo using credentials we created latter on (in this exmaple its: private-reg-cred)
+  apiVersion: v1
+  kind: Pod
+  metadata:
+    name: mginx
+  spec:
+    containers:
+    - name: nginx
+      image: myprivateregistry.com:5000/nginx
+    imagePullSecrets:
+    - name: private-reg-cred

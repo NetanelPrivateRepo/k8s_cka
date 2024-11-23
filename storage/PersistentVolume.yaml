@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-vol1
+spec:
+  capacity:
+    storage: 5Gi # the size of the pv we are requesting 
+  accessModes:
+    - ReadWriteOnce # access mode, can be: ReadWriteOnce / ReadOnlyMany / ReadWriteMany / ReadWriteOncePod
+  awsElasticBlockStore:
+    volumeID: <volume-id>
+    fsType: ext4
+  persistentVolumeReclaimPolicy: Recycle # here we are setting what will happend to our data after we are removing the pvc
+                                          # in this example, the data will not removed till the admin will remove the folder

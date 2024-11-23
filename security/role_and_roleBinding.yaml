@@ -1,0 +1,37 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: developer
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["list", "get", "create", "update"]
+  resourceNames: [“blue“, “orange”] # rule has per to edit blue/orange pods 
+- apiGroups: [""]
+  resources: ["ConfigMap"]
+  verbs: [“create“]
+
+# here we are creating a rules
+# In this example we are creating a rule named developer that has access on pods & ConfigMap 
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: devuser-developer-binding
+subjects:
+- kind: User
+  name: dev-user
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: developer
+  apiGroup: rbac.authorization.k8s.io
+
+# here we are setting which user/group has rules 
+# in this example the user: dev-user has access to developer rule
+
+---
+# we can check access using those commands:
+kubectl auth can-i create deployments --- checking if mu user can create deployments
+kubectl auth can-i create deployments --as dev-user --- checking if dev-user can create deployments
+kubectl auth can-i create pods --as dev-user --namespace test --- checking if dev-user can create pods at test NS

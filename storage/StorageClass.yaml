@@ -1,0 +1,42 @@
+# we are using storage classes for creating a disk volume on the cloud provider
+# when we are using storage classes, and want to use them on our app we don't need to create pv (cretaed automaticlly)
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: aws-storage
+provisioner: ebs.csi.aws.com
+
+# example of app using storage from AWS
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: aws-storage
+provisioner: ebs.csi.aws.com
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: myclaim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: aws-storage
+  resources:
+    requests:
+      storage: 8Gi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: app1
+spec:
+  containers:
+  - name: app1
+    image: busybox:1.28
+    volumeMounts:
+    - name: workdir
+      mountPath: /logs 
+  volumes:
+  - name: mypd # in this example we are mounting a pvc to our contianer 
+      persistentVolumeClaim:
+        claimName: myclaim

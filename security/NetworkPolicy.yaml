@@ -1,0 +1,33 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: db-policy
+spec:
+  podSelector:
+    matchLabels:
+      role: db # setting on which label the policy will be effected, in this case the policy applied on db- pods 
+  policyTypes:
+  - Ingress # inside the pod
+  - Egress # outside  the pod
+  ingress:
+  - from: # each - is sperate rule
+    - podSelector:
+        matchLabels:
+          name: api-pod  # setting on which label the pod can access. in this case the only api-pod can access on 3306 port
+      namespaceSelector:
+        matchLabels:
+          name: prod # using this conf only pods with api-pod and prod lables can access
+    - ipBlock:
+        cidr: 192.168.1.10/32 # using this conf external IP can access also
+    ports:
+    - protocol: TCP
+      port: 3306
+  egress:
+  - to:
+    - ipBlock:
+        cidr: 192.168.1.10/32 # using this conf we can access exteranl Ip's from our pod
+      ports:
+      - protocol: TCP
+        port: 80
+
+

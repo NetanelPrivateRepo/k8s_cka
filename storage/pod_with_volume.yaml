@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: app1
+spec:
+  containers:
+  - name: app1
+    image: busybox:1.28
+    command: [ "sh", "-c", "while [ true ]; do echo 'Hello'; sleep 10; done | tee -a /logs/hello.txt" ]
+    volumeMounts:
+    - name: workdir
+      mountPath: /logs # path where we mount out volume on the container level
+  volumes:
+  - name: workdir
+    hostPath: # there are many of storage types, https://kubernetes.io/docs/concepts/storage/volumes/#volume-types
+      path: /var/log/app1 # path which we are mounting to the container
+  - name: mypd # in this example we are mounting a pvc to our contianer 
+      persistentVolumeClaim:
+        claimName: myclaim
