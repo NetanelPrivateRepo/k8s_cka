@@ -1,0 +1,4 @@
+# CNI configuration
+
+/opt/cni/bin/ --- path where all the CNI biniries located
+/etc/cni/net.d --- CNI configuration directory

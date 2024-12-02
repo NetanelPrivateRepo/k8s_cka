@@ -1,0 +1,4 @@
+kube-proxy can be userspace | iptablkes | ipvs types
+
+ps aux | grep kube-apiserver --- see kube-apiserver properties
+
